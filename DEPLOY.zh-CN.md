@@ -144,4 +144,12 @@ cloudflared tunnel run atimelogger-mcp
 
 ---
 
-## 附录 A：把本项目
+## 附录 A：把本项目推到你自己的 GitHub
+
+```bash
+# 在本项目根目录（已是一个 git 仓库）
+gh repo create atimelogger-mcp --public --source=. --remote=origin --push
+# 没装 gh 的话：先在 github.com 手动建空仓库 atimelogger-mcp，再：
+git remote add origin https://github.com/<你的用户名>/atimelogger-mcp.git
+git push -u origin main
+```
