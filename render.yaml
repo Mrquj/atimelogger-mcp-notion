@@ -1,0 +1,21 @@
+# Render.com blueprint — one-click deploy of the remote MCP server.
+# 1. Push this repo to your GitHub account.
+# 2. In Render: New -> Blueprint -> pick the repo. Render reads this file.
+# 3. Set the ATL_TOKEN and MCP_AUTH_TOKEN values when prompted (sync: false).
+# 4. Deploy → your public URL is https://<service-name>.onrender.com
+#    The MCP endpoint to give Notion is  https://<service-name>.onrender.com/mcp
+services:
+  - type: web
+    name: atimelogger-mcp
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: ATL_TOKEN
+        sync: false # set in the Render dashboard (secret)
+      - key: MCP_AUTH_TOKEN
+        sync: false # set in the Render dashboard (secret)
+      # - key: ATL_BASE_URL
+      #   value: https://app.atimelogger.pro

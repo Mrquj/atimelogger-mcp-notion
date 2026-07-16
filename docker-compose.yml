@@ -1,0 +1,13 @@
+# Run the remote MCP server on your own VPS.
+#   1. cp .env.example .env   and fill in ATL_TOKEN + MCP_AUTH_TOKEN
+#   2. docker compose up -d --build
+#   3. Put a TLS-terminating reverse proxy (Caddy/Nginx/Cloudflare Tunnel) in
+#      front so Notion can reach it over HTTPS, e.g. https://mcp.example.com/mcp
+services:
+  atimelogger-mcp:
+    build: .
+    image: atimelogger-mcp:latest
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3000:3000"
