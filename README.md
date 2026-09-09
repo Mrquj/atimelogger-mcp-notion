@@ -1,6 +1,6 @@
 # ATimeLogger MCP Server
 
-A standalone MCP (Model Context Protocol) server that exposes the ATimeLogger REST API to Claude Desktop / Claude Code over stdio. Scope: activities (start/stop/pause/log), reports/history, and activity types.
+A standalone MCP (Model Context Protocol) server that exposes the ATimeLogger REST API to Claude Desktop / Claude Code over stdio. Scope: activities (start/stop/pause/log/update), reports/history, activity types, and official app documentation.
 
 ## Setup
 
@@ -98,8 +98,10 @@ Open your Notion **custom agent → Tools and access → add an MCP server**, pa
 | `stop_activity` | Stop the active activity (name optional if only one is active); same backdating options |
 | `pause_resume_activity` | Pause or resume |
 | `log_interval` | Retroactively log a completed entry (wall-clock times, optional comment/tags) |
+| `update_activity` | Update the comment and/or tags of an existing entry (running or past) without changing its tracked time; get `activity_id` from `get_current_status` or `list_intervals` |
 | `time_report` | Aggregated per-type statistics for a period (`today`, `this_week`, `last_month`, … or explicit dates) |
-| `list_intervals` | Raw history grouped by day, paged, max 100-day range |
+| `list_intervals` | Raw history grouped by day, paged, max 100-day range; entries carry the `activity_id` that `update_activity` needs |
+| `app_help` | Official app documentation (atimelogger.pro/docs) — the assistant looks up how app features work (goals, widgets, sync, export, …) instead of guessing |
 
 Tools accept human-readable type names (fuzzy matched); internal ids also flow through tool outputs and parameters for exact targeting, but are never shown to the user. Durations are returned as `"2h 15m"` strings; times are shown in the user's ATimeLogger timezone unless a `timezone` parameter is given.
 
@@ -119,6 +121,10 @@ Things you can say to your assistant once the server is registered:
 
 > "Log 2 hours of Reading yesterday from 9 to 11pm" · "Add a gym session for last Saturday morning, 90 minutes, tag it 'legs'" · "I slept from 23:30 to 7:15, log it"
 
+**Annotating existing entries**
+
+> "Add a comment to the timer that's running: pair-programming with Lisa" · "Tag yesterday's gym entry 'legs'"
+
 **Reports & history**
 
 > "Where did my week go?" · "How much did I work in June, broken down by week?" · "Compare my sleep this month vs last month" · "Show everything I tracked today" · "Which day last week had the most Development time?"
@@ -131,6 +137,6 @@ Activity names are fuzzy-matched against your own type list, so "start dev" find
 
 ## Limitations
 
-- `start_activity` cannot attach a comment (the underlying start endpoint takes only a type and time); use `log_interval` for entries with comments/tags.
-- No editing of existing entries (the server-side update API is incomplete).
+- `start_activity` cannot attach a comment (the underlying start endpoint takes only a type and time); add one afterwards with `update_activity`, or use `log_interval` for retroactive entries with comments/tags.
+- Only comments and tags of existing entries can be edited (`update_activity`); interval times cannot be changed and entries cannot be deleted — use the ATimeLogger app for that (the assistant can explain how via `app_help`).
 - History requests are capped at 100 days by the backend.
