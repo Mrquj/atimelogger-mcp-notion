@@ -50,7 +50,7 @@ export function registerTypeTools(server: McpServer): void {
       },
     },
     withErrors(async ({ include_archived }) => {
-      return textResult(await listTypes(includeArchived ?? false));
+      return textResult(await listTypes(include_archived ?? false));
     })
   );
 }
